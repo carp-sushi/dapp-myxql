@@ -37,9 +37,9 @@ defmodule Dapp.MixProject do
   defp deps do
     [
       {:ecto_identifier, "~> 0.2.0"},
-      {:ecto_sql, "~> 3.9.2"},
+      {:ecto_sql, "~> 3.12.1"},
       {:jason, "~> 1.4"},
-      {:myxql, "~> 0.6.0"},
+      {:myxql, "~> 0.7.0"},
       {:plug_cowboy, "~> 2.7.2"},
       {:hammox, "~> 0.7", only: :test},
       {:credo, "~> 1.7.11", only: [:dev, :test], runtime: false}
