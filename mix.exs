@@ -53,7 +53,7 @@ defmodule Dapp.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      quality: ["test", "credo --strict"]
+      quality: ["test", "credo suggest --all --strict"]
     ]
   end
 
