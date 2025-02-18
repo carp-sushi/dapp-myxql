@@ -1,7 +1,5 @@
 defmodule Dapp.Data.Repo.InviteRepoTest do
-  use ExUnit.Case, async: true
-  alias Dapp.Data.Repo.UserRepo
-  alias Dapp.Repo
+  use ExUnit.Case
   alias Ecto.Adapters.SQL.Sandbox
 
   # Repo being tested
@@ -10,38 +8,35 @@ defmodule Dapp.Data.Repo.InviteRepoTest do
   # Setup test context
   setup do
     :ok = Sandbox.checkout(Dapp.Repo)
-    {:ok, admin, role} = create_user()
+    {:ok, user, role} = UserUtil.persist_user()
+    email = FakeData.generate_email_addresss()
 
     %{
-      admin: admin,
-      role: role,
       params: %{
-        email: FakeData.generate_email_addresss(),
-        user_id: admin.id,
+        email: email,
+        user_id: user.id,
         role_id: role.id
+      },
+      expect: %{
+        user_id: user.id,
+        role_id: role.id,
+        email: email
       }
     }
   end
 
-  # Create user helper.
-  defp create_user do
-    role = Repo.insert!(FakeData.generate_role())
-    address = FakeData.generate_blockchain_address()
-    email = FakeData.generate_email_addresss()
-    {:ok, user} = UserRepo.create(%{blockchain_address: address, email: email, role_id: role.id})
-    {:ok, user, role}
-  end
-
   # Test signup repo
   describe "InviteRepo" do
-    test "should enable user signups via invite given valid params", ctx do
-      # Test invite creation by admin step
+    test "should enable user signups via invite", ctx do
+      # Test invite creation step
       assert {:ok, created} = InviteRepo.create(ctx.params)
-      assert created.user_id == ctx.admin.id
-      assert created.role_id == ctx.role.id
+      assert created.user_id == ctx.expect.user_id
+      assert created.role_id == ctx.expect.role_id
+      assert created.email == ctx.expect.email
 
       # Test lookup step
-      assert {:ok, invite} = InviteRepo.lookup(created.id, ctx.params.email)
+      assert {:ok, invite} = InviteRepo.lookup(created.id, created.email)
+      assert invite.id == created.id
       assert invite.email == created.email
 
       # Test user signup step
@@ -49,6 +44,7 @@ defmodule Dapp.Data.Repo.InviteRepoTest do
       user_params = %{blockchain_address: blockchain_address, email: ctx.params.email}
       assert {:ok, user} = InviteRepo.signup(user_params, invite)
       assert user.role_id == invite.role_id
+      assert user.email == invite.email
 
       # Ensure invite has been consumed
       assert {:error, error} = InviteRepo.lookup(created.id, ctx.params.email)
@@ -63,6 +59,12 @@ defmodule Dapp.Data.Repo.InviteRepoTest do
     test "should fail looking up an invite that does not exist" do
       assert {:error, error} = InviteRepo.lookup(Nanoid.generate(), FakeData.generate_email_addresss())
       assert error.message == "invite does not exist or has already been consumed"
+    end
+
+    test "should fail signup given empty params", ctx do
+      assert {:ok, invite} = InviteRepo.create(ctx.params)
+      assert {:error, error} = InviteRepo.signup(%{}, invite)
+      assert error.message == "signup failure"
     end
   end
 end

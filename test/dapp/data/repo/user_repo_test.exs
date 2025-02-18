@@ -1,6 +1,5 @@
 defmodule Dapp.Data.Repo.UserRepoTest do
-  use ExUnit.Case, async: true
-  alias Dapp.Repo
+  use ExUnit.Case
   alias Ecto.Adapters.SQL.Sandbox
 
   # Repo being tested
@@ -11,30 +10,27 @@ defmodule Dapp.Data.Repo.UserRepoTest do
     # When using a sandbox, each test runs in an isolated, independent transaction
     # which is rolled back after test execution.
     :ok = Sandbox.checkout(Dapp.Repo)
-    %{address: FakeData.generate_blockchain_address()}
-  end
-
-  # Create user helper.
-  defp create_user(address) do
-    role = Repo.insert!(FakeData.generate_role())
-    params = %{blockchain_address: address, email: FakeData.generate_email_addresss(), role_id: role.id}
-    UserRepo.create(params)
+    assert {:ok, user, _role} = UserUtil.persist_user()
+    %{address: user.blockchain_address, expect: %{user: user}}
   end
 
   # Test user repo
   describe "UserRepo" do
     test "should get a user by blockchain address", ctx do
-      assert {:ok, user} = create_user(ctx.address)
-      assert UserRepo.get_by_address(ctx.address).id == user.id
+      assert UserRepo.get_by_address(ctx.address).id == ctx.expect.user.id
     end
 
     test "should get recent users", ctx do
-      assert {:ok, user} = create_user(ctx.address)
-      assert [user] == UserRepo.list_recent()
+      assert [ctx.expect.user] == UserRepo.list_recent()
     end
 
     test "should handle nil blockchain address on get" do
       assert is_nil(UserRepo.get_by_address(nil))
+    end
+
+    test "should fail to create user given empty params" do
+      assert {:error, error} = UserRepo.create(%{})
+      assert error.message == "failed to create user"
     end
   end
 end

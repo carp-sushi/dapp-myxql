@@ -52,7 +52,6 @@ defmodule Dapp.Data.Repo.InviteRepo do
     |> Repo.transaction()
     |> case do
       {:ok, result} -> {:ok, result.user}
-      {:error, cs} -> Error.new(cs, "signup failure")
       {:error, _name, cs, _changes_so_far} -> Error.new(cs, "signup failure")
     end
   end

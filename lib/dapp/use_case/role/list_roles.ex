@@ -4,10 +4,11 @@ defmodule Dapp.UseCase.Role.ListRoles do
   """
   alias Dapp.Dto
   use Dapp.Data.Keeper
+  use Dapp.UseCase
 
-  @behaviour Dapp.UseCase
+  @impl true
   def execute(_args) do
     roles = role_repo().all() |> Enum.map(&Dto.from_schema/1)
-    {:ok, %{roles: roles}}
+    %{roles: roles} |> success()
   end
 end
