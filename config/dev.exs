@@ -10,4 +10,4 @@ config :dapp, Dapp.Repo,
   pool_size: 4
 
 config :dapp,
-  http_port: 8081
+  http_port: 8083
