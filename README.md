@@ -4,6 +4,8 @@ A web-service template with role-based access control (RBAC).
 
 ## Setup
 
+Note: only verified to work on linux; problems with erlang/otp install on apple arm arch.
+
 First, install the [asdf version manager](https://asdf-vm.com/guide/getting-started.html).
 Then, add the [asdf erlang](https://github.com/asdf-vm/asdf-erlang)
 and [asdf elixir](https://github.com/asdf-vm/asdf-elixir)
