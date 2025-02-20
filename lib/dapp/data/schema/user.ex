@@ -27,6 +27,7 @@ defmodule Dapp.Data.Schema.User do
     |> cast(params, [:blockchain_address, :email, :name, :role_id])
     |> validate_required([:blockchain_address, :email, :role_id])
     |> validate_email(:email, checks: [:pow])
+    |> validate_length(:email, max: 255)
     |> validate_length(:name, max: 255)
     |> unique_constraint(:blockchain_address)
     |> unique_constraint(:email)

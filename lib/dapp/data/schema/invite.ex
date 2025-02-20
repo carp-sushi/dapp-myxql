@@ -27,6 +27,7 @@ defmodule Dapp.Data.Schema.Invite do
     |> cast(params, [:email, :role_id, :user_id, :consumed_at])
     |> validate_required([:email, :role_id, :user_id])
     |> validate_email(:email, checks: [:pow])
+    |> validate_length(:email, max: 255)
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:role_id)
     |> unique_constraint(:email)
