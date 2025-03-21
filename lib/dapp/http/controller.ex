@@ -3,6 +3,7 @@ defmodule Dapp.Http.Controller do
   HTTP request handler.
   """
   alias Dapp.Http.Presenter
+
   require Logger
 
   @doc "Execute a use case and send the result as json."
@@ -14,7 +15,7 @@ defmodule Dapp.Http.Controller do
     |> Presenter.reply(conn)
   rescue
     e ->
-      Exception.format(:error, e, __STACKTRACE__) |> Logger.error()
+      :error |> Exception.format(e, __STACKTRACE__) |> Logger.error()
       Presenter.exception(conn)
   end
 end

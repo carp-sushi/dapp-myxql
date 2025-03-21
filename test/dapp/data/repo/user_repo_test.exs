@@ -1,9 +1,10 @@
 defmodule Dapp.Data.Repo.UserRepoTest do
   use ExUnit.Case
+
+  alias Dapp.Data.Repo.UserRepo
   alias Ecto.Adapters.SQL.Sandbox
 
   # Repo being tested
-  alias Dapp.Data.Repo.UserRepo
 
   # Test context
   setup do

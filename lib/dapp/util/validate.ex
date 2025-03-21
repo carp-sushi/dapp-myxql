@@ -2,9 +2,10 @@ defmodule Dapp.Util.Validate do
   @moduledoc """
   Validation helpers.
   """
+  import Ecto.Changeset
+
   alias Dapp.Error
   alias Ecto.Changeset
-  import Ecto.Changeset
 
   @doc "Validate a blockhain address in a parameter map."
   def blockchain_address_params(params) do
@@ -44,9 +45,10 @@ defmodule Dapp.Util.Validate do
   defp validate_address_prefix(changeset, address) do
     network_prefix = System.get_env("NETWORK_PREFIX", "pb")
 
-    case String.starts_with?(address, network_prefix) do
-      true -> changeset
-      false -> add_error(changeset, :blockchain_address, "must have prefix: #{network_prefix}")
+    if String.starts_with?(address, network_prefix) do
+      changeset
+    else
+      add_error(changeset, :blockchain_address, "must have prefix: #{network_prefix}")
     end
   end
 end

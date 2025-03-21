@@ -13,8 +13,7 @@ defmodule Dapp.Http.Presenter do
     end
   end
 
-  def reply({:error, error}, conn),
-    do: Response.send_json(conn, %{error: error}, 400)
+  def reply({:error, error}, conn), do: Response.send_json(conn, %{error: error}, 400)
 
   @doc """
   Something went wrong executing a use case.

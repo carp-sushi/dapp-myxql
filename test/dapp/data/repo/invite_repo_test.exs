@@ -1,9 +1,10 @@
 defmodule Dapp.Data.Repo.InviteRepoTest do
   use ExUnit.Case
+
+  alias Dapp.Data.Repo.InviteRepo
   alias Ecto.Adapters.SQL.Sandbox
 
   # Repo being tested
-  alias Dapp.Data.Repo.InviteRepo
 
   # Setup test context
   setup do

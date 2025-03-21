@@ -1,14 +1,18 @@
 defmodule Dapp.Data.Repo.RoleRepoTest do
   use ExUnit.Case
+
+  alias Dapp.Data.Repo.RoleRepo
   alias Ecto.Adapters.SQL.Sandbox
 
   # Repo being tested
-  alias Dapp.Data.Repo.RoleRepo
 
   # Set up SQL sandbox and insert a random number of roles.
   setup do
     :ok = Sandbox.checkout(Dapp.Repo)
-    roles = FakeData.generate_roles(:rand.uniform(5)) |> Enum.map(fn role -> RoleUtil.persist_role(role.name) end)
+
+    roles =
+      5 |> :rand.uniform() |> FakeData.generate_roles() |> Enum.map(fn role -> RoleUtil.persist_role(role.name) end)
+
     %{expect: %{size: length(roles)}}
   end
 
